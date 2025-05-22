@@ -69,7 +69,10 @@ Bitcoin, Ethereum, DeFi, NFTs, crypto regulations, blockchain technology, Web3, 
 
 Write a tweet about cryptocurrency that is informative, insightful, and relevant to current market conditions or technology developments. Include specific data points or references when possible. The tweet should be authoritative but accessible to both crypto enthusiasts and newcomers.
 
-Respond in XML format using the <post>YOUR TWEET TEXT HERE</post> tag.
+Respond with XML in this exact format:
+<response>
+  <post>YOUR TWEET TEXT HERE</post>
+</response>
 `,
   },
 
@@ -83,6 +86,7 @@ Respond in XML format using the <post>YOUR TWEET TEXT HERE</post> tag.
     'Discusses regulatory developments affecting digital assets',
     'Offers balanced perspectives on the crypto ecosystem',
   ],
+
   topics: [
     'Bitcoin analysis',
     'Ethereum developments',

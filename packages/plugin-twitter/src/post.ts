@@ -83,14 +83,51 @@ export class TwitterPostClient {
     logger.log('Automatic tweet generation is enabled');
 
     const generateNewTweetLoop = async () => {
-      const minPostMinutes =
-        this.state?.TWITTER_POST_INTERVAL_MIN ||
-        this.runtime.getSetting('TWITTER_POST_INTERVAL_MIN') ||
-        90;
-      const maxPostMinutes =
-        this.state?.TWITTER_POST_INTERVAL_MAX ||
-        this.runtime.getSetting('TWITTER_POST_INTERVAL_MAX') ||
-        180;
+      // Parse interval settings from various sources, ensuring they're numbers
+      let minPostMinutes;
+      let maxPostMinutes;
+
+      // First check state
+      if (typeof this.state?.TWITTER_POST_INTERVAL_MIN === 'number') {
+        minPostMinutes = this.state.TWITTER_POST_INTERVAL_MIN;
+      }
+      // Then check runtime settings
+      else if (this.runtime.getSetting('TWITTER_POST_INTERVAL_MIN')) {
+        minPostMinutes = parseInt(String(this.runtime.getSetting('TWITTER_POST_INTERVAL_MIN')), 10);
+      }
+      // Finally check environment variables directly
+      else if (process.env.TWITTER_POST_INTERVAL_MIN) {
+        minPostMinutes = parseInt(process.env.TWITTER_POST_INTERVAL_MIN, 10);
+      }
+      // Default fallback
+      else {
+        minPostMinutes = 90;
+      }
+
+      // Same for max interval
+      if (typeof this.state?.TWITTER_POST_INTERVAL_MAX === 'number') {
+        maxPostMinutes = this.state.TWITTER_POST_INTERVAL_MAX;
+      } else if (this.runtime.getSetting('TWITTER_POST_INTERVAL_MAX')) {
+        maxPostMinutes = parseInt(String(this.runtime.getSetting('TWITTER_POST_INTERVAL_MAX')), 10);
+      } else if (process.env.TWITTER_POST_INTERVAL_MAX) {
+        maxPostMinutes = parseInt(process.env.TWITTER_POST_INTERVAL_MAX, 10);
+      } else {
+        maxPostMinutes = 180;
+      }
+
+      // Add logging to diagnose issues
+      logger.log('Twitter posting interval settings:', {
+        minPostMinutes,
+        maxPostMinutes,
+        sources: {
+          stateMin: this.state?.TWITTER_POST_INTERVAL_MIN,
+          stateMax: this.state?.TWITTER_POST_INTERVAL_MAX,
+          runtimeMin: this.runtime.getSetting('TWITTER_POST_INTERVAL_MIN'),
+          runtimeMax: this.runtime.getSetting('TWITTER_POST_INTERVAL_MAX'),
+          envMin: process.env.TWITTER_POST_INTERVAL_MIN,
+          envMax: process.env.TWITTER_POST_INTERVAL_MAX,
+        },
+      });
       const randomMinutes =
         Math.floor(Math.random() * (maxPostMinutes - minPostMinutes + 1)) + minPostMinutes;
       const interval = randomMinutes * 60 * 1000;
