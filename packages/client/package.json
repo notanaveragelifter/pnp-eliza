@@ -5,7 +5,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "extract-version": "bash ./version.sh",
+    "extract-version": "node ./version.js",
     "start:client": "bun run extract-version && vite",
     "dev:client": "bun run extract-version && vite",
     "build": "bun run extract-version && vite build",

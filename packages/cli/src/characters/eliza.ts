@@ -19,11 +19,13 @@ export const character: Character = {
   name: 'Eliza',
   plugins: [
     '@elizaos/plugin-sql',
-    ...(process.env.OPENAI_API_KEY ? ['@elizaos/plugin-openai'] : []),
+    '@elizaos/plugin-openai', // Force using OpenAI
+    // ...(process.env.OPENAI_API_KEY ? ['@elizaos/plugin-openai'] : []),
     ...(process.env.ANTHROPIC_API_KEY ? ['@elizaos/plugin-anthropic'] : []),
-    ...(!process.env.OPENAI_API_KEY && !process.env.ANTHROPIC_API_KEY
-      ? ['@elizaos/plugin-local-ai']
-      : []),
+    // Disable local AI
+    // ...(!process.env.OPENAI_API_KEY && !process.env.ANTHROPIC_API_KEY
+    //   ? ['@elizaos/plugin-local-ai']
+    //   : []),
     ...(process.env.DISCORD_API_TOKEN ? ['@elizaos/plugin-discord'] : []),
     ...(process.env.TWITTER_USERNAME ? ['@elizaos/plugin-twitter'] : []),
     ...(process.env.TELEGRAM_BOT_TOKEN ? ['@elizaos/plugin-telegram'] : []),
